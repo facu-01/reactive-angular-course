@@ -29,6 +29,4 @@ export class HomeComponent implements OnInit {
       )
     );
   }
-
-  reloadCourses() {}
 }

@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
-import { filter, tap } from "rxjs/operators";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
 import { Course } from "../model/course";
 
@@ -13,9 +12,6 @@ export class CoursesCardListComponent {
   @Input()
   courses: Course[] = [];
 
-  @Output()
-  private coursesChanged = new EventEmitter();
-
   constructor(private dialog: MatDialog) {}
 
   editCourse(course: Course) {
@@ -27,14 +23,6 @@ export class CoursesCardListComponent {
 
     dialogConfig.data = course;
 
-    const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
-
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((val) => val),
-        tap(() => this.coursesChanged.emit())
-      )
-      .subscribe();
+    this.dialog.open(CourseDialogComponent, dialogConfig);
   }
 }

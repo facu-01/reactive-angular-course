@@ -22,8 +22,7 @@ export class CourseDialogComponent implements AfterViewInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CourseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) course: Course,
-    private coursesStore: CoursesStore,
-    private messagesService: MessagesService
+    private coursesStore: CoursesStore
   ) {
     this.course = course;
 
@@ -42,23 +41,7 @@ export class CourseDialogComponent implements AfterViewInit {
 
     this.coursesStore.saveCourse(this.course.id, changes);
 
-    // const saveCourseLoading$ = this.loadingService
-    //   .showLoaderUntilCompleted(
-    //     this.coursesService.saveCourse(this.course.id, changes)
-    //   )
-    //   .pipe(
-    //     catchError((err) => {
-    //       this.messagesService.showErrors(
-    //         "Ocurrío un error al guardar el curso"
-    //       );
-
-    //       return throwError(err);
-    //     })
-    //   );
-
-    // saveCourseLoading$.subscribe((val) => {
-    //   this.dialogRef.close(val);
-    // });
+    this.close();
   }
 
   close() {
