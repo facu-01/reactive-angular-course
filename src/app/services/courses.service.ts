@@ -8,6 +8,7 @@ import { Course } from "../model/course";
   providedIn: "root",
 })
 export class CoursesService {
+  //OLD
   http = inject(HttpClient);
 
   loadAllCourses(): Observable<Course[]> {

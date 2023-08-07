@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { Course } from "../model/course";
 import { CoursesStore } from "../services/courses.store";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: "home",

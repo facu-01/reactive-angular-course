@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { catchError, map, scan, shareReplay, switchMap } from "rxjs/operators";
 import { LoadingService } from "../loading/loading.service";
 import { MessagesService } from "../messages/messages.service";
-import { Course } from "../model/course";
+import { Course, sortCoursesBySeqNo } from "../model/course";
 
 @Injectable({
   providedIn: "root",
@@ -31,6 +31,7 @@ export class CoursesStore {
         console.log(err);
         return throwError(err);
       }),
+      map((courses) => courses.sort(sortCoursesBySeqNo)),
       shareReplay()
     );
 
@@ -40,6 +41,7 @@ export class CoursesStore {
       switchMap((courses) =>
         this.changesSubject.pipe(
           scan((acc, { id, changes }) => {
+            // optimistic updates
             if (id === null) return acc;
 
             return acc.map((c) => {
@@ -55,11 +57,17 @@ export class CoursesStore {
   saveCourse(courseId: string, changes: Partial<Course>) {
     this.changesSubject.next({ id: courseId, changes });
 
-    //TODO: handle errors
-
-    this.http
+    this.http // se podria mover aca la invocacion de las actualizaciones en el frontend
       .put(`/api/courses/${courseId}`, changes)
-      .pipe(shareReplay())
+      .pipe(
+        catchError((err) => {
+          const message = "No se pudo guardar el curso";
+          console.log(message, err);
+          this.messages.showErrors(message);
+          return throwError(err);
+        }),
+        shareReplay()
+      )
       .subscribe();
   }
 }
