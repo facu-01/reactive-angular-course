@@ -3,12 +3,12 @@ import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { Course } from "../model/course";
+import { Lesson } from "../model/lesson";
 
 @Injectable({
   providedIn: "root",
 })
 export class CoursesService {
-  //OLD
   http = inject(HttpClient);
 
   loadAllCourses(): Observable<Course[]> {
@@ -22,5 +22,19 @@ export class CoursesService {
     return this.http
       .put(`/api/courses/${courseId}`, changes)
       .pipe(shareReplay());
+  }
+
+  searchLesson(filter: string): Observable<Lesson[]> {
+    return this.http
+      .get<{ payload: Lesson[] }>("api/lessons", {
+        params: {
+          filter,
+          pageSize: 100,
+        },
+      })
+      .pipe(
+        map((res) => res["payload"]),
+        shareReplay()
+      );
   }
 }
