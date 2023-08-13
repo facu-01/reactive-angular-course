@@ -18,6 +18,24 @@ export class CoursesService {
     );
   }
 
+  getCourseById(coruseId: number) {
+    return this.http.get<Course>(`api/courses/${coruseId}`).pipe(shareReplay());
+  }
+
+  getLessonsByCourseId(courseId: number) {
+    return this.http
+      .get<{ payload: Lesson[] }>("api/lessons", {
+        params: {
+          courseId,
+          pageSize: 100,
+        },
+      })
+      .pipe(
+        map((res) => res.payload),
+        shareReplay()
+      );
+  }
+
   saveCourse(courseId: string, changes: Partial<Course>): Observable<any> {
     return this.http
       .put(`/api/courses/${courseId}`, changes)
